@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package com.example.Uber;
+
+
+option java_multiple_files = true;
+option java_package = "com.example.Uber";
+option java_outer_classname = "Ride";
+
+
+message RideAcceptanceRequest {
+    int32 driver_id = 1;
+    int32 booking_id = 2;
+}
+
+message RideAcceptanceResponse {
+    bool success = 1;
+}
+
+service RideService {
+    rpc acceptRide(RideAcceptanceRequest) returns (RideAcceptanceResponse);
+}
+
+service RideNotificationService {
+    rpc notifyDriversForNewRide(RideNotificationRequest) returns (RideNotificationResponse);
+    
+}
+
+message RideNotificationRequest {
+    string pick_up_location_latitude = 1;
+    string pick_up_location_longitude = 2;
+    int32 booking_id = 3;
+    repeated int32 driver_ids = 4;
+}
+
+message RideNotificationResponse {
+    bool success = 1;
+}
+
+service PaymentService {
+    rpc processPayment(PaymentRequest) returns (PaymentResponse);
+    rpc updatePaymentStatus(PaymentStatusUpdateRequest) returns (PaymentStatusUpdateResponse);
+}
+
+message PaymentRequest {
+    int32 booking_id = 1;
+    int32 user_id = 2;
+    double amount = 3;
+    PaymentMethod method = 4;
+}
+
+enum PaymentMethod {
+    CASH = 0;
+    PAYPAL = 1;
+    UPI = 2;
+}
+
+message PaymentResponse {
+    bool success = 1;
+    string transaction_id = 2;
+    string message = 3;
+    PaymentStatus status = 4;
+}
+
+enum PaymentStatus {
+    PENDING = 0;
+    COMPLETED = 1;
+    FAILED = 2;
+    PROCESSING = 3;
+}
+
+message PaymentStatusUpdateRequest {
+    int32 booking_id = 1;
+    PaymentStatus status = 2;
+}
+
+message PaymentStatusUpdateResponse {
+    bool success = 1;
+}
+
+// <CHANGE> Added DriverMatchService for ETA-based driver assignment
+service DriverMatchService {
+    rpc findDriver(DriverMatchRequest) returns (DriverMatchResponse);
+}
+
+message DriverMatchRequest {
+    double pickup_latitude = 1;
+    double pickup_longitude = 2;
+    int32 booking_id = 3;
+}
+
+message DriverMatchResponse {
+    bool success = 1;
+    int32 driver_id = 2;
+    string driver_name = 3;
+    int32 eta_seconds = 4;
+    double driver_latitude = 5;
+    double driver_longitude = 6;
+}
