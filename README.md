@@ -1,9 +1,6 @@
 # 🚗 Real-Time Ride Dispatch & Live Tracking System
 ### Uber-Inspired | ETA-Based Matching | GeoHashing | WebSockets + gRPC
 
-<p align="center">
-  <img src="docs/preview-banner.png" alt="Project Preview" width="100%" />
-</p>
 
 <p align="center">
   <b>A foundation-level, scalable ride-hailing backend + mobile-first frontend</b><br/>
