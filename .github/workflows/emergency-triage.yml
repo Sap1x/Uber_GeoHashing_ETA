@@ -1,0 +1,29 @@
+name: Emergency triage tests
+
+on:
+  pull_request:
+    paths:
+      - "lib/emergency-triage.*"
+      - "tests/emergency-triage.test.mjs"
+      - ".github/workflows/emergency-triage.yml"
+  push:
+    branches:
+      - feature/help-ai-emergency-center
+    paths:
+      - "lib/emergency-triage.*"
+      - "tests/emergency-triage.test.mjs"
+      - ".github/workflows/emergency-triage.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  emergency-triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run offline classifier safety tests
+        run: node --test tests/emergency-triage.test.mjs
