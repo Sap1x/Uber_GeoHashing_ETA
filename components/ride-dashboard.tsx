@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { useSocket, type DriverLocation } from "@/hooks/use-socket"
+import { EmergencyAssistant } from "@/components/emergency-assistant"
 
 export function RideDashboard() {
   const [status, setStatus] = React.useState<"idle" | "searching" | "on-ride" | "completed">("idle")
@@ -186,11 +187,18 @@ export function RideDashboard() {
           <Navigation className="w-32 h-32 rotate-45" />
         </div>
 
+        <EmergencyAssistant
+          city={city}
+          bookingId={currentBooking?.id}
+          driverName={assignedDriver?.name}
+          pickupLocation={pickupLocation}
+        />
+
         <div className="absolute top-4 left-4 z-20">
           <div className="bg-black text-white px-4 py-2 rounded-lg font-bold text-xl shadow-lg">UBER</div>
         </div>
 
-        <div className="absolute top-4 left-24 right-4 z-10">
+        <div className="absolute top-16 left-4 right-4 z-10">
           <Card className="shadow-lg border-none">
             <CardContent className="p-3 flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-blue-500" />
