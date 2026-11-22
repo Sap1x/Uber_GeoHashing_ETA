@@ -27,6 +27,7 @@ export function EmergencyAssistant({ city, bookingId, driverName, pickupLocation
   const [manualCopy, setManualCopy] = React.useState("")
   const closeButton = React.useRef<HTMLButtonElement>(null)
   const launchButton = React.useRef<HTMLButtonElement>(null)
+  const locationRequestId = React.useRef(0)
 
   const advice = React.useMemo(() => triageEmergency(description, selected), [description, selected])
 
@@ -34,7 +35,9 @@ export function EmergencyAssistant({ city, bookingId, driverName, pickupLocation
     setOpen(false)
     setDescription("")
     setSelected("auto")
+    locationRequestId.current += 1
     setLocation(null)
+    setLocating(false)
     setLocationStatus("")
     setShareStatus("")
     setManualCopy("")
@@ -57,15 +60,18 @@ export function EmergencyAssistant({ city, bookingId, driverName, pickupLocation
       setLocationStatus("Location is unavailable on this device. You can still share trip details.")
       return
     }
+    const requestId = ++locationRequestId.current
     setLocating(true)
     setLocationStatus("Requesting your permission for a one-time location fix…")
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
+        if (requestId !== locationRequestId.current) return
         setLocation({ latitude: coords.latitude, longitude: coords.longitude })
         setLocating(false)
         setLocationStatus("Current GPS added to your share preview. It has not been sent to anyone.")
       },
       () => {
+        if (requestId !== locationRequestId.current) return
         setLocating(false)
         setLocationStatus("Location was denied or unavailable. No GPS will be included.")
       },
